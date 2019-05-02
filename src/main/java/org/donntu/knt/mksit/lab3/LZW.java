@@ -1,7 +1,6 @@
 package org.donntu.knt.mksit.lab3;
 
 import java.io.*;
-import java.util.HashMap;
 
 public class LZW {
 
@@ -11,7 +10,8 @@ public class LZW {
                 DataInputStream read = new DataInputStream(new BufferedInputStream(new FileInputStream(input)));
                 DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(output)))
         ) {
-            HashMap<String, Integer> table = new HashMap<>();
+
+            HashStructure<Integer> table = new HashStructure<>(new HashFunctionImpl());
             final int ADDING_COUNT = 256;
 
             for (int i = 0; i < ADDING_COUNT; i++) {
@@ -20,6 +20,7 @@ public class LZW {
             int count = ADDING_COUNT;
             byte inputByte;
             StringBuilder temp = new StringBuilder();
+
             byte[] buffer = new byte[3];
             boolean onLeft = true;
 
@@ -45,7 +46,7 @@ public class LZW {
                 }
                 c = (char) i;
 
-                if (table.containsKey(temp.toString() + c)) {
+                if (table.contains(temp.toString() + c)) {
                     temp.append(c);
                 } else {
                     String s12 = to12bit(table.get(temp.toString()));

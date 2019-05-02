@@ -6,18 +6,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class HashStructure {
-    private List<Pair<String, LinkedList<Object>>> store = new LinkedList<>();
+public class HashStructure<T> { // проблема в том, что '1','2' и '12' - одно и то же
+    private List<Pair<String, LinkedList<T>>> store = new LinkedList<>();
     private HashFunction hashFunction;
 
     private String lastFoundKey = null;
-    private LinkedList<Object> lastFoundValueList = null;
+    private LinkedList<T> lastFoundValueList = null;
+
+    public HashStructure(HashFunction hashFunction) {
+        this.hashFunction = hashFunction;
+    }
 
     public boolean contains(String key) {
-        Optional<Pair<String, LinkedList<Object>>> equalPairOptional = getPair(key);
+        String hashCode = hashFunction.hashCode(key);
+        Optional<Pair<String, LinkedList<T>>> equalPairOptional = getPair(hashCode);
         if(equalPairOptional.isPresent()) {
-            Pair<String, LinkedList<Object>> pair = equalPairOptional.get();
-            lastFoundKey = pair.getKey();
+            Pair<String, LinkedList<T>> pair = equalPairOptional.get();
+            lastFoundKey = key;
             lastFoundValueList = pair.getValue();
             return true;
         } else {
@@ -25,38 +30,39 @@ public class HashStructure {
         }
     }
 
-    public Object get(String key) {
+    public T get(String key) {
+        String hashCode = hashFunction.hashCode(key);
         if(key.equals(lastFoundKey)) {
-            return lastFoundValueList.getFirst();
+            T first = lastFoundValueList.getFirst();
+            lastFoundValueList = null;
+            lastFoundKey = null;
+            return first;
         } else {
-            Optional<Pair<String, LinkedList<Object>>> pair = getPair(key);
-            if(pair.isPresent()) {
-
-            }
-            return null;
+            Optional<Pair<String, LinkedList<T>>> pair = getPair(hashCode);
+            return pair.map(stringLinkedListPair -> stringLinkedListPair.getValue().getFirst()).orElse(null);
         }
     }
 
-    public void put(Object object) {
-        String code = hashFunction.hashCode(object);
-        Optional<Pair<String, LinkedList<Object>>> pair = getPair(code);
+    public void put(String key, T value) {
+        String code = hashFunction.hashCode(key);
+        Optional<Pair<String, LinkedList<T>>> pair = getPair(code);
         if(pair.isPresent()) {
-            LinkedList<Object> value = pair.get().getValue();
-            value.add(object);
+            LinkedList<T> valuesList = pair.get().getValue();
+            valuesList.add(value);
         } else {
-            LinkedList<Object> value = new LinkedList<>();
-            value.add(object);
-            store.add(new Pair<>(code, value));
+            LinkedList<T> valuesList = new LinkedList<>();
+            valuesList.add(value);
+            store.add(new Pair<>(code, valuesList));
         }
     }
 
-    private Optional<Pair<String, LinkedList<Object>>> getPair(String key) {
+    private Optional<Pair<String, LinkedList<T>>> getPair(String hashCode) {
         return store
                 .stream()
                 .filter(
                         pair -> pair
                                 .getKey()
-                                .equals(key))
+                                .equals(hashCode))
                 .findFirst();
     }
 
