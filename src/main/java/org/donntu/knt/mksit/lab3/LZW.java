@@ -122,7 +122,8 @@ public class LZW {
     }
 
     public static void decompress(String input, String output) throws IOException {
-        String[] charArray = new String[4096];
+        int charArraySize = 4096;
+        String[] charArray = new String[charArraySize];
         for (int i = 0; i < 256; i++) {
             charArray[i] = Character.toString((char) i);
         }
@@ -160,13 +161,13 @@ public class LZW {
                 onLeft = !onLeft;
                 if (currentWord >= count) {
                     String s = charArray[priorityWord] + charArray[priorityWord].charAt(0);
-                    if (count < 4096) {
+                    if (count < charArraySize) {
                         charArray[count] = s;
                     }
                     count++;
                     out.writeBytes(s);
                 } else {
-                    if (count < 4096) {
+                    if (count < charArraySize) {
                         charArray[count] = charArray[priorityWord] + charArray[currentWord].charAt(0);
                     }
                     count++;
