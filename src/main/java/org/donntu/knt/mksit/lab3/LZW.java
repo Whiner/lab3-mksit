@@ -11,7 +11,7 @@ public class LZW {
                 DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(output)))
         ) {
 
-            HashStructure<Integer> table = new HashStructure<>(new HashFunctionImpl());
+            HashStructure<Integer> table = new HashStructure<>(new MD4());
             final int ADDING_COUNT = 256;
 
             for (int i = 0; i < ADDING_COUNT; i++) {

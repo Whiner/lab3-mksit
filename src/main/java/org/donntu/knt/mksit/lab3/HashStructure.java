@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class HashStructure<T> { // проблема в том, что '1','2' и '12' - одно и то же
+public class HashStructure<T> {
     private List<Pair<String, LinkedList<T>>> store = new LinkedList<>();
     private HashFunction hashFunction;
 
