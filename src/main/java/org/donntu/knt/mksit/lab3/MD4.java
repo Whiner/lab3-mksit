@@ -1,21 +1,27 @@
 package org.donntu.knt.mksit.lab3;
 
-public class MD4 implements HashFunction{
-    private static final int BLOCK_LENGTH = 64;       //    = 512 / 8;
+public class MD4 implements HashFunction {
+    private static final int BLOCK_LENGTH = 64;
     private int[] context = new int[4];
     private long count;
     private byte[] buffer = new byte[BLOCK_LENGTH];
     private int[] X = new int[16];
+    private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
     public String hashCode(String string) {
         engineReset();
         engineUpdate(string.getBytes());
-        byte[] bytes = engineDigest();
-        StringBuilder builder = new StringBuilder();
-        for (byte b : bytes) {
-            builder.append((char)b);
+        return bytesToHex(engineDigest());
+    }
+
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for ( int j = 0; j < bytes.length; j++ ) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
         }
-        return builder.toString();
+        return new String(hexChars);
     }
 
     private void engineReset() {
@@ -32,7 +38,7 @@ public class MD4 implements HashFunction{
 
     private void engineUpdate(byte[] input) {
         int bufferNdx = (int) (count % BLOCK_LENGTH);
-        count += input.length;                                        // update number of bytes
+        count += input.length;
         int partLen = BLOCK_LENGTH - bufferNdx;
         int i = 0;
         if (input.length >= partLen) {
