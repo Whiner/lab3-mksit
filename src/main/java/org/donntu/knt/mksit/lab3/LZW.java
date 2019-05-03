@@ -3,9 +3,10 @@ package org.donntu.knt.mksit.lab3;
 import java.io.*;
 
 public class LZW {
+    public static final String COMPRESS_EXTENSION = ".lzw";
 
-    public static void compress(String input, String output) throws IOException {
-
+    public static String compress(String input) throws IOException {
+        String output = FileRenamer.getNameCompressedFile(input, COMPRESS_EXTENSION);
         try (
                 DataInputStream read = new DataInputStream(new BufferedInputStream(new FileInputStream(input)));
                 DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(output)))
@@ -77,7 +78,7 @@ public class LZW {
             }
 
         }
-
+        return output;
     }
 
     private static void bufferWork(DataOutputStream out, byte[] buffer, String s12) throws IOException {
@@ -121,13 +122,15 @@ public class LZW {
 
     }
 
-    public static void decompress(String input, String output) throws IOException {
+    public static String decompress(String input) throws IOException {
         int charArraySize = 4096;
         String[] charArray = new String[charArraySize];
         for (int i = 0; i < 256; i++) {
             charArray[i] = Character.toString((char) i);
         }
         int count = 256;
+
+        String output = FileRenamer.getNameDecompressedFile(input, COMPRESS_EXTENSION);
 
         try (
                 DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(input)));
@@ -177,5 +180,6 @@ public class LZW {
             }
 
         }
+        return output;
     }
 }
