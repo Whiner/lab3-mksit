@@ -65,6 +65,4 @@ public class HashStructure<T> {
                                 .equals(hashCode))
                 .findFirst();
     }
-
-
 }

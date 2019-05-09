@@ -8,7 +8,8 @@ import static org.donntu.knt.mksit.lab3.LZW.decompress;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        String inputFilename = "files/input.txt";
+        //String inputFilename = "files/input.txt";
+        String inputFilename = "files/image.bmp";
         String compressedFilename = compress(inputFilename);
         String decompressedFilename = decompress(compressedFilename);
 

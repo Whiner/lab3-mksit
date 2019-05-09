@@ -6,7 +6,7 @@ public class MD4 implements HashFunction {
     private long count;
     private byte[] buffer = new byte[BLOCK_LENGTH];
     private int[] X = new int[16];
-    private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    private final static char[] hexArray = "0123456789abcdef".toCharArray();
 
     public String hashCode(String string) {
         engineReset();
@@ -59,8 +59,9 @@ public class MD4 implements HashFunction {
         int padLen = (bufferNdx < 56) ? (56 - bufferNdx) : (120 - bufferNdx);
         byte[] tail = new byte[padLen + 8];
         tail[0] = (byte) 0x80;
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++) {
             tail[padLen + i] = (byte) ((count * 8) >>> (8 * i));
+        }
         engineUpdate(tail);
         byte[] result = new byte[16];
         for (int i = 0; i < 4; i++) {
@@ -73,11 +74,12 @@ public class MD4 implements HashFunction {
     }
 
     private void transform(byte[] block, int offset) {
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++) {
             X[i] = (block[offset++] & 0xFF) |
                     (block[offset++] & 0xFF) << 8 |
                     (block[offset++] & 0xFF) << 16 |
                     (block[offset++] & 0xFF) << 24;
+        }
 
 
         int A = context[0];
